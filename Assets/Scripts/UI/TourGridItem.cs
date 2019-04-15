@@ -23,14 +23,14 @@ public class TourGridItem : MonoBehaviour
         get => _nameText.text;
     }
 
-    public Sprite tourBackground
+    public Texture tourBackground
     {
         set
         {
-            _backgroundImage.sprite = value;
+            _backgroundImage.texture = value;
             _backgroundImage.color = value ? Color.white : _fallbackColor;
         }
-        get => _backgroundImage.sprite;
+        get => _backgroundImage.texture;
     }
 
     public OnClickEvent onClick
@@ -44,7 +44,7 @@ public class TourGridItem : MonoBehaviour
     }
 
     private Text _nameText;
-    private Image _backgroundImage;
+    private RawImage _backgroundImage;
     private Button _button;
     private RectTransform _rectTransform;
 
@@ -59,7 +59,7 @@ public class TourGridItem : MonoBehaviour
         _nameText = transform.GetChild(0).GetChild(0).GetComponent<Text>();
         Assert.IsNotNull(_nameText, "TourGrid item must contain name text");
 
-        _backgroundImage = GetComponent<Image>();
+        _backgroundImage = GetComponent<RawImage>();
         Assert.IsNotNull(_backgroundImage, "TourGrid item must contain background image");
 
         _button = GetComponent<Button>();
@@ -75,11 +75,11 @@ public class TourGridItem : MonoBehaviour
 
     void Update()
     {
-        //if (tourBackground != null && _rectTransform.rect != _lastSize)
-        //{ 
-        //    FitBackgroundImage();
-        //    _lastSize = _rectTransform.rect;
-        //}
+        if (tourBackground != null && _rectTransform.rect != _lastSize)
+        {
+            FitBackgroundImage();
+            _lastSize = _rectTransform.rect;
+        }
     }
 
     public IEnumerator LoadBackgroundImage(string url)
@@ -98,7 +98,7 @@ public class TourGridItem : MonoBehaviour
         Texture2D texture = DownloadHandlerTexture.GetContent(requestTexture);
         texture.Apply();
 
-        tourBackground = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+        tourBackground = texture;
     }
 
     void FitBackgroundImage()
@@ -106,7 +106,7 @@ public class TourGridItem : MonoBehaviour
         Vector2 targetSize = _rectTransform.rect.size;
         float targetAspect = targetSize.x / targetSize.y;
 
-        Texture2D texture = _backgroundImage.sprite.texture;
+        Texture texture = _backgroundImage.texture;
 
         Vector2 textureSize = new Vector2(texture.width, texture.height);
         float textureAspect = textureSize.x / textureSize.y;
@@ -128,6 +128,6 @@ public class TourGridItem : MonoBehaviour
         }
 
         if (shouldUpdate)
-            tourBackground = Sprite.Create(texture, new Rect(offset, size), Vector2.zero);
+            _backgroundImage.uvRect = new Rect(offset / textureSize, size / textureSize);
     }
 }
