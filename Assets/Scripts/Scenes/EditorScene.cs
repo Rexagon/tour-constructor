@@ -6,6 +6,8 @@ public class EditorScene : MonoBehaviour
     public static EditorScene instance { private set; get; }
 
     public Panorama panorama;
+    public SceneViewPanel sceneViewPanel;
+    public TourStateEditPanel tourStateEditPanel;
 
     void Awake()
     {
@@ -13,6 +15,8 @@ public class EditorScene : MonoBehaviour
         instance = this;
 
         Assert.IsNotNull(panorama, "Editor scene must contain panorama");
+        Assert.IsNotNull(sceneViewPanel, "Editor scene must contain scene view panel");
+        Assert.IsNotNull(tourStateEditPanel, "Editor scene must contain state edit panel");
     }
 
     void Update()
